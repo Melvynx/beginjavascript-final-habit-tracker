@@ -2,14 +2,21 @@ import { createHabit } from '../api/habits-api';
 import { TodayHabits } from './TodayHabit';
 
 export class AddHabitDialog {
-  static instance = new AddHabitDialog();
+  static instance;
   constructor() {
     if (AddHabitDialog.instance) {
-      return AddHabitDialog.instance;
+      throw new Error('Use AddHabitDialog.getInstance()');
     }
-
-    this._open = false;
   }
+
+  static getInstance() {
+    if (!AddHabitDialog.instance) {
+      AddHabitDialog.instance = new AddHabitDialog();
+    }
+    return AddHabitDialog.instance;
+  }
+
+  _open = false;
 
   init() {
     this.trigger = document.querySelector('#add-new-habit');
@@ -18,6 +25,13 @@ export class AddHabitDialog {
 
     this.trigger.addEventListener('click', () => {
       this.open = true;
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (this.open === false) return;
+
+      this.open = false;
     });
 
     this.form.addEventListener('submit', async (event) => {
@@ -38,7 +52,7 @@ export class AddHabitDialog {
       alert('Failed to create habit');
     }
 
-    await TodayHabits.instance.refresh();
+    await TodayHabits.getInstance().refresh();
 
     this.open = false;
   }

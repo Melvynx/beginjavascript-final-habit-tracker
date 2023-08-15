@@ -1,10 +1,10 @@
 import './style.css';
 import { AddHabitDialog } from './ui/AddHabitDialog';
-import { HabitHistory } from './ui/HistoryHabit';
+import { HabitHistoryDialog } from './ui/HabitHistoryDialog';
 import { TodayHabits } from './ui/TodayHabit';
 
-TodayHabits.instance.init();
+TodayHabits.getInstance().init();
 
-AddHabitDialog.instance.init();
+AddHabitDialog.getInstance().init();
 
-HabitHistory.instance.init();
+HabitHistoryDialog.getInstance().init();

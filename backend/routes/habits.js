@@ -3,7 +3,7 @@ import {
   getHabits,
   getTodayHabits,
   updateHabit,
-} from '../dabase.helper.js';
+} from '../habits.helper.js';
 
 export async function habitsRoute(fastify) {
   fastify.get('/', async () => {
@@ -29,7 +29,7 @@ export async function habitsRoute(fastify) {
     return todayHabits;
   });
 
-  fastify.post('/:habitId', async (request, reply) => {
+  fastify.patch('/:habitId', async (request, reply) => {
     const body = request.body;
 
     if (body.done === undefined) {

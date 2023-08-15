@@ -2,12 +2,24 @@ import { getTodayHabits, updateHabitDone } from '../api/habits-api';
 import { HabitSquare } from './HabitSqure';
 
 export class TodayHabits {
-  static instance = new TodayHabits();
+  static instance;
   constructor() {
     if (TodayHabits.instance) {
-      return TodayHabits.instance;
+      throw new Error('Use TodayHabits.getInstance()');
     }
   }
+
+  static getInstance() {
+    if (!TodayHabits.instance) {
+      TodayHabits.instance = new TodayHabits();
+    }
+    return TodayHabits.instance;
+  }
+
+  onToggle = (habitSquare) => {
+    this.toggleDone(habitSquare);
+  };
+  habitsSquare = [];
 
   async init() {
     this.element = document.querySelector('#today-habits');
@@ -16,12 +28,17 @@ export class TodayHabits {
 
   async refresh() {
     await this.setTodayHabits();
+    this.habitsSquare.forEach((habitSquare) => {
+      habitSquare.removeEventListener('toggle', this.onToggle);
+      habitSquare.destroy();
+    });
+    this.habitsSquare = [];
     this.render();
   }
 
-  async toggleDone(habitSquare) {
+  async toggleDone({ currentTarget }) {
     try {
-      await updateHabitDone(habitSquare.id, !habitSquare.isDone);
+      await updateHabitDone(currentTarget.id, !currentTarget.isDone);
 
       this.refresh();
     } catch {
@@ -31,12 +48,13 @@ export class TodayHabits {
 
   render() {
     const habitsSquare = this.todayHabits.map((habit) => {
-      const habitSquare = new HabitSquare(habit.id, habit.title, habit.done, () => {
-        this.toggleDone(habitSquare);
-      });
+      const habitSquare = new HabitSquare(habit.id, habit.title, habit.done);
+      habitSquare.addEventListener('toggle', this.onToggle);
 
       return habitSquare;
     });
+
+    this.habitsSquare = habitsSquare;
 
     // remove all children from the element
     this.element.innerHTML = '';

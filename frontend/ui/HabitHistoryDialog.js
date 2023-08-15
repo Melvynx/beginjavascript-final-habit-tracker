@@ -1,11 +1,18 @@
 import { getAllHabits } from '../api/habits-api';
 
-export class HabitHistory {
-  static instance = new HabitHistory();
+export class HabitHistoryDialog {
+  static instance;
   constructor() {
-    if (HabitHistory.instance) {
-      return HabitHistory.instance;
+    if (HabitHistoryDialog.instance) {
+      throw new Error('Use HabitHistoryDialog.getInstance()');
     }
+  }
+
+  static getInstance() {
+    if (!HabitHistoryDialog.instance) {
+      HabitHistoryDialog.instance = new HabitHistoryDialog();
+    }
+    return HabitHistoryDialog.instance;
   }
 
   init() {
@@ -13,6 +20,13 @@ export class HabitHistory {
     this.dialog = document.querySelector('#habits-history-dialog');
 
     this._open = false;
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (this.open === false) return;
+
+      this.open = false;
+    });
 
     this.trigger.addEventListener('click', () => {
       this.open = true;
@@ -53,7 +67,7 @@ export class HabitHistory {
 const getLowestDate = (habits) => {
   return habits
     .reduce((acc, habit) => {
-      return [...acc, ...Object.keys(habit.doneDays)];
+      return [...acc, ...Object.keys(habit.daysDone)];
     }, [])
     .map((date) => new Date(date))
     .sort((a, b) => a - b)[0];
@@ -93,7 +107,7 @@ const createTableRows = (habits, dates) => {
 
     dates.forEach((date) => {
       const cell = document.createElement('td');
-      const doneDay = habit.doneDays[date];
+      const doneDay = habit.daysDone[date];
       cell.textContent = doneDay ? '✅' : '❌';
       row.appendChild(cell);
     });

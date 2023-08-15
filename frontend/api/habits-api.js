@@ -23,7 +23,7 @@ export const createHabit = (title) =>
 
 export const updateHabitDone = (id, done) =>
   fetch(`${BASE_URL}/habits/${id}`, {
-    method: 'POST',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },

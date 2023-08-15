@@ -9,7 +9,7 @@ const fastify = Fastify({
 
 await fastify.register(cors, {
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 });
 
 fastify.register(habitsRoute, { prefix: '/habits' });

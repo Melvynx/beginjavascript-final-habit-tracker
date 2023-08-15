@@ -20,7 +20,7 @@ export const getTodayHabits = async () => {
   return database.habits.map((habit) => {
     return {
       ...habit,
-      done: habit.doneDays[today] || false,
+      done: habit.daysDone[today] || false,
     };
   });
 };
@@ -31,7 +31,7 @@ export const addHabit = async (title) => {
   habits.push({
     id: habits[habits.length - 1].id + 1,
     title,
-    doneDays: {},
+    daysDone: {},
   });
 
   await fs.writeFile(databaseFile, JSON.stringify({ habits }, null, 2));
@@ -46,7 +46,7 @@ export const updateHabit = async (habitId, done) => {
     throw new Error('Habit not found');
   }
 
-  habits[habitIndex].doneDays[today] = done;
+  habits[habitIndex].daysDone[today] = done;
 
   await fs.writeFile(databaseFile, JSON.stringify({ habits }, null, 2));
 };

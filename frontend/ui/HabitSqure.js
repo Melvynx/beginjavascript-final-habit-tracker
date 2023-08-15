@@ -1,14 +1,15 @@
-export class HabitSquare {
-  constructor(id, title, done, toggleDone) {
+export class HabitSquare extends EventTarget {
+  constructor(id, title, done) {
+    super();
     this.id = id;
     this.title = title;
     this._isDone = done;
-    this.toggleDone = toggleDone;
 
     this.element = createElement(this.isDone);
 
     this.element.addEventListener('click', () => {
-      this.toggleDone();
+      const event = new CustomEvent('toggle');
+      this.dispatchEvent(event);
     });
 
     this.render();
@@ -18,6 +19,10 @@ export class HabitSquare {
     this.element.appendChild(createTitleElement(this.title));
 
     this.element.appendChild(createDoneElement(this.isDone));
+  }
+
+  destroy() {
+    this.element.remove();
   }
 
   get isDone() {
